@@ -114,13 +114,15 @@ class HashTable:
             print('current', current)
             return current
         
-        # key != empty
+        # Key matches
         if current.key == key:
             self.storage[idx] = current.next
             print('current.next', current.next)
             return
+        # get next node
         new_node = current.next
-        
+
+        # check for key
         while new_node is not None:
             if new_node.key == key:
                 current.next = new_node.next
