@@ -12,9 +12,10 @@ class HashTable:
     A hash table that with `capacity` buckets
     that accepts string keys
     '''
-    def __init__(self, capacity):
+    def __init__(self, capacity=15):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
+        self.size =  0
 
 
     def _hash(self, key):
@@ -23,7 +24,14 @@ class HashTable:
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
+        # V1
         return hash(key)
+        # V2
+        # hashsum=0
+        # for i,char in enumerate(key):
+        #     hashsum += (i+len(key))**ord(char)
+
+        # return hashsum
 
 
     def _hash_djb2(self, key):
@@ -51,7 +59,40 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        
+        # Get Key
+        index = self._hash_mod(key)
+        # Get 'head' node on that key
+        node = self.storage[index]
+        
+        if node is None:
+            # Make head node w/ linked pair
+            self.storage[index] = LinkedPair(key,value)
+            self.size +=1
+            return
+
+        else: 
+            if node.key == key:
+                node.value = value
+                print('value', value)
+                return
+            while node.next is not None:
+                node = node.next
+                if node.key == key: 
+                    node.value = value
+                    return
+        node.next = LinkedPair(key, value)
+        self.size += 1
+
+        # # Get to the end of the linked chain on this hashed key value
+        # while node is not None:
+        #     # update prev node to this node
+        #     prev=node
+        #     # update the current node to the next node in the LinkedPair chain
+        #     node = node.next
+        # # You have found the last node
+        # # go back to the prev node and set the next to a new linked pair
+        # prev.next = LinkedPair(key, value)
 
 
 
@@ -63,7 +104,30 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # Get hashed key
+        idx = self._hash_mod(key)
+        # Get current node @ hashed index
+        current = self.storage[idx]
+        
+        # key == empty
+        if current is None:
+            print('current', current)
+            return current
+        
+        # key != empty
+        if current.key == key:
+            self.storage[idx] = current.next
+            print('current.next', current.next)
+            return
+        new_node = current.next
+        
+        while new_node is not None:
+            if new_node.key == key:
+                current.next = new_node.next
+                print('current.next', current.next)
+                return
+            current = new_node
+            new_node = new_node.next
 
 
     def retrieve(self, key):
@@ -74,7 +138,23 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # Find the hashed key you are looking for
+        index = self._hash_mod(key)
+        # Get the 'head' node on that LinkedPair chain
+        node= self.storage[index]
+
+        # Traverse the chain until you find the value yopu are looking for
+        while node is not None and node.key != key:
+            print(f'NodeValue: {node.value}')
+            node=node.next
+
+        if node is None:
+            print(f'Node not found')
+            return None
+        else:
+            print(f'WE FOUND IT!')
+            print(f'Node.Value: {node.value}')
+            return node.value
 
 
     def resize(self):
@@ -84,7 +164,8 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        for x in range(self.capacity):
+            self.storage.append(None)
 
 
 
