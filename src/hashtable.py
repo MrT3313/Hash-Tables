@@ -1,4 +1,4 @@
-# Initial Commit
+import pdb; 
 
 # '''
 # Linked List hash table key/value pair
@@ -72,19 +72,22 @@ class HashTable:
         # We have a PAIR at the hash index in question 
         # the KEY of ^^ is NOT the key you are looking for
         while curr_linkedPair is not None and curr_linkedPair.key != key:     
+            print(f'-*- TRAVERSE')
             # Increment up the LAST linked pair to the CURRENT
             last_linkedPair = curr_linkedPair
             # Increment the CURRENT linked pair to the NEXT
             curr_linkedPair = last_linkedPair.next
-            print(f'-*- MOVE')
 
 
         print(f'-*- UPDATED Current Linked Pair {curr_linkedPair}')
+        # print(curr_linkedPair.value)
         print(f'-*- UPDATED Last Linked Pair {last_linkedPair}')
+        print(f'-*- Key {key}')
 
-        # you have FOUND the key that matches your 
+        # you have FOUND the key that matches your key... OVERWRITE
         if curr_linkedPair is not None:
-            curr_linkedPair = value 
+            curr_linkedPair.value = value 
+        # you are at the end of a traversal and have NOT found the key
         else:
             # make new linked pair
             new_linkedPair = LinkedPair(key, value)
@@ -94,6 +97,7 @@ class HashTable:
 
         print(f'Self.Storage {self.storage}')
 
+
     def remove(self, key):
         '''
         Remove the value stored with the given key.
@@ -102,7 +106,31 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # Make the hashed index
+        index = self._hash_mod(key)
+        print(f'Created Hash Index {index}')
+
+        # Find what is at that hashed index in the hash table's storage
+        curr_linkedPair = self.storage[index]
+        last_linkedPair = None
+
+        # Traverse
+        while curr_linkedPair is not None and curr_linkedPair.key != key:
+            last_linkedPair = curr_linkedPair
+            curr_linkedPair = last_linkedPair.next
+
+        # your at the end and you have NOT found the node
+        if curr_linkedPair is None: 
+            print(f'ERROR: node not found...therefore cant be removed')
+        else:
+            # Case: None
+            # you are still at the first element in the LL -- resetting the 'base' node in the hash tabls
+            if last_linkedPair is None: 
+                self.storage[index] = curr_linkedPair.next
+            # remove the node 
+            # 'bring your arms together'...
+            else: 
+                last_linkedPair = curr_linkedPair.next
 
 
     def retrieve(self, key):
@@ -139,12 +167,20 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        
+        # Set variables
+        prev_storage = self.storage             # what it used to be
+        self.capacity = 2 * self.capacity       # double it
+        self.storage = [None] * self.capacity   # make empty cells
 
+        # Replace data
+        for item in prev_storage:
+            curr_linkedPair = item
 
-# ht = HashTable()
-
-# ht.insert('test_item', 'test_value')
+            # insert data into newly sized and overwritten storage
+            while curr_linkedPair is not None:
+                self.insert( curr_linkedPair.key, curr_linkedPair.value )
+                curr_linkedPair = curr_linkedPair.next
 
 print(f'--this is the end--')
 
