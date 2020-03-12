@@ -53,9 +53,46 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        print(f'\n-INSERT-\n')
+
+        # Make the hashed index
+        index = self._hash_mod(key)
+        print(f'-*- Created Hash Index {index}')
+
+        # Find what is at that hashed index in the hash table's storage
+        curr_linkedPair = self.storage[index]
+        last_linkedPair = None
+        print(f'-*- Current Linked Pair {curr_linkedPair}')
+        print(f'-*- Last Linked Pair {last_linkedPair}')
+
+        # Traverse the linked value 'tree' at the hashed index => this 
+        # would be accounting for colisions in which a link list is implemented
+        # as the hashed index
+        ## --
+        # We have a PAIR at the hash index in question 
+        # the KEY of ^^ is NOT the key you are looking for
+        while curr_linkedPair is not None and curr_linkedPair.key != key:     
+            # Increment up the LAST linked pair to the CURRENT
+            last_linkedPair = curr_linkedPair
+            # Increment the CURRENT linked pair to the NEXT
+            curr_linkedPair = last_linkedPair.next
+            print(f'-*- MOVE')
 
 
+        print(f'-*- UPDATED Current Linked Pair {curr_linkedPair}')
+        print(f'-*- UPDATED Last Linked Pair {last_linkedPair}')
+
+        # you have FOUND the key that matches your 
+        if curr_linkedPair is not None:
+            curr_linkedPair = value 
+        else:
+            # make new linked pair
+            new_linkedPair = LinkedPair(key, value)
+            # add the rest of the chain on
+            new_linkedPair.next = self.storage[index]
+            self.storage[index] = new_linkedPair
+
+        print(f'Self.Storage {self.storage}')
 
     def remove(self, key):
         '''
@@ -76,7 +113,23 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # Make the hashed index
+        index = self._hash_mod(key)
+        print(f'Created Hash Index {index}')
+
+        # Find what is at that hashed index in the hash table's storage
+        curr_pair = self.storage[index]
+        print(f'Current Pair {curr_pair}')
+
+        # Loop
+        while curr_pair is not None:
+            # Did you find it?
+            if(curr_pair.key == key):
+                return curr_pair.value
+            # Increment the current pair
+            curr_pair = curr_pair.next 
+
+
 
 
     def resize(self):
@@ -89,31 +142,36 @@ class HashTable:
         pass
 
 
+# ht = HashTable()
 
-if __name__ == "__main__":
-    ht = HashTable(2)
+# ht.insert('test_item', 'test_value')
 
-    ht.insert("line_1", "Tiny hash table")
-    ht.insert("line_2", "Filled beyond capacity")
-    ht.insert("line_3", "Linked list saves the day!")
+print(f'--this is the end--')
 
-    print("")
+# if __name__ == "__main__":
+#     ht = HashTable(2)
 
-    # Test storing beyond capacity
-    print(ht.retrieve("line_1"))
-    print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
+#     ht.insert("line_1", "Tiny hash table")
+#     ht.insert("line_2", "Filled beyond capacity")
+#     ht.insert("line_3", "Linked list saves the day!")
 
-    # Test resizing
-    old_capacity = len(ht.storage)
-    ht.resize()
-    new_capacity = len(ht.storage)
+#     print("")
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+#     # Test storing beyond capacity
+#     print(ht.retrieve("line_1"))
+#     print(ht.retrieve("line_2"))
+#     print(ht.retrieve("line_3"))
 
-    # Test if data intact after resizing
-    print(ht.retrieve("line_1"))
-    print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
+#     # Test resizing
+#     old_capacity = len(ht.storage)
+#     ht.resize()
+#     new_capacity = len(ht.storage)
 
-    print("")
+#     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+
+#     # Test if data intact after resizing
+#     print(ht.retrieve("line_1"))
+#     print(ht.retrieve("line_2"))
+#     print(ht.retrieve("line_3"))
+
+#     print("")
